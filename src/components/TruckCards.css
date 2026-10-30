@@ -1,0 +1,101 @@
+.truck-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 40px;
+  flex-wrap: wrap;
+}
+
+.truck-card {
+  background: #0b2e3f;
+  width: 280px;
+  border-radius: 12px;
+  padding: 20px;
+  color: white;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+  transition: 0.3s ease;
+}
+
+.truck-card:hover {
+  transform: translateY(-5px);
+}
+
+.truck-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 15px;
+}
+
+.truck-card-header h3 {
+  margin: 0;
+  font-size: 16px;
+  flex: 1;
+}
+
+.truck-card-header span {
+  font-size: 12px;
+  color: #bbb;
+}
+
+.truck-image {
+  width: 100%;
+  height: 150px;
+  margin: 15px 0;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.truck-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.truck-label {
+  font-size: 12px;
+  color: #bbb;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.truck-value {
+  font-size: 14px;
+  margin: 5px 0 0 0;
+  color: #fff;
+}
+
+.truck-company {
+  margin-bottom: 15px;
+}
+
+.truck-edit-btn {
+  width: 100%;
+  padding: 10px;
+  background: #1f7aec;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+  font-size: 14px;
+}
+
+.truck-edit-btn:hover {
+  background: #155dc4;
+  transform: scale(1.02);
+}
+
+.truck-edit-btn:active {
+  transform: scale(0.98);
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .truck-card {
+    background: #0b2e3f;
+    color: white;
+  }
+}
