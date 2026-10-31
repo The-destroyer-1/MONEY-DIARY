@@ -69,7 +69,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   useEffect(() => {
-    if (isInitialized && !isAuthenticated && pathname !== "/" && !pathname.includes("/signin") && !pathname.includes("/signup")) {
+    if (isInitialized && !isAuthenticated && !pathname.includes("/signin") && !pathname.includes("/signup")) {
       router.push("/signin");
     }
   }, [isAuthenticated, isInitialized, pathname, router]);
