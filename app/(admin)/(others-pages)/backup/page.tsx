@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import ComponentCard from '@/components/common/ComponentCard';
 import Button from '@/components/ui/button/Button';
@@ -22,12 +22,16 @@ import {
 export default function BackupPage() {
   const { customers } = useCustomer();
   const { messages } = useChat();
-  const [backups, setBackups] = useState(getSavedBackups());
+  const [backups, setBackups] = useState<ReturnType<typeof getSavedBackups>>([]);
   const [backupName, setBackupName] = useState('');
   const [isCreating, setIsCreating] = useState(false);
   const [isMerging, setIsMerging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+
+  useEffect(() => {
+    setBackups(getSavedBackups());
+  }, []);
 
   const showMessage = (text: string, type: 'success' | 'error' = 'success') => {
     setMessage({ text, type });

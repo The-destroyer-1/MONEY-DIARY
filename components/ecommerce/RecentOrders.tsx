@@ -6,8 +6,8 @@ import {
   TableCell,
   TableHeader,
   TableRow,
-} from "../ui/table";
-import Badge from "../ui/badge/Badge";
+} from "@/components/ui/table";
+import Badge from "@/components/ui/badge/Badge";
 import { useCustomer } from "@/context/CustomerContext";
 
 

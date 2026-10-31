@@ -48,10 +48,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         if (parsedUser && typeof parsedUser === "object" && "username" in parsedUser && typeof parsedUser.username === "string") {
           const safeUser: User = {
             username: parsedUser.username,
-            ...(typeof parsedUser.id === "string" ? { id: parsedUser.id } : {}),
-            ...(typeof parsedUser.name === "string" ? { name: parsedUser.name } : {}),
-            ...(typeof parsedUser.role === "string" ? { role: parsedUser.role } : {}),
-            ...(typeof parsedUser.avatar === "string" ? { avatar: parsedUser.avatar } : {}),
+            ...("id" in parsedUser && typeof parsedUser.id === "string" ? { id: parsedUser.id } : {}),
+            ...("name" in parsedUser && typeof parsedUser.name === "string" ? { name: parsedUser.name } : {}),
+            ...("role" in parsedUser && typeof parsedUser.role === "string" ? { role: parsedUser.role } : {}),
+            ...("avatar" in parsedUser && typeof parsedUser.avatar === "string" ? { avatar: parsedUser.avatar } : {}),
           };
           // Restore the browser-only session after hydration.
           // eslint-disable-next-line react-hooks/set-state-in-effect
