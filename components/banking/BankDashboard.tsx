@@ -165,12 +165,6 @@ const navigation: { label: string; icon: IconName }[] = [
 ];
 
 export default function BankDashboard() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [password, setPassword] = useState("");
-  const [favoriteCar, setFavoriteCar] = useState("");
-  const [loginError, setLoginError] = useState("");
-  const [loginStep, setLoginStep] = useState<"password" | "question">("password");
-  const [loginPending, setLoginPending] = useState(false);
   const [activePage, setActivePage] = useState("Overview");
   const [search, setSearch] = useState("");
   const [selectedCard, setSelectedCard] = useState<CardCode | "all">("all");
@@ -197,52 +191,6 @@ export default function BankDashboard() {
   function showToast(message: string) {
     setToast(message);
     window.setTimeout(() => setToast(""), 3500);
-  }
-
-  async function signIn(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (loginStep === "password") {
-      if (!password) {
-        setLoginError("Enter your password to continue.");
-        return;
-      }
-      setLoginError("");
-      setLoginStep("question");
-      return;
-    }
-    if (!favoriteCar.trim()) {
-      setLoginError("Answer your security question to continue.");
-      return;
-    }
-
-    setLoginPending(true);
-    try {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password, favoriteCar }),
-      });
-      const result = await response.json() as {
-        authenticated?: boolean;
-        error?: string;
-        notificationSent?: boolean;
-        notificationStatus?: "not_configured" | "send_failed";
-      };
-      if (!response.ok || !result.authenticated) {
-        setLoginError(result.error || "Login failed. Please try again.");
-        if (response.status === 429) setLoginStep("password");
-        return;
-      }
-      setLoginError("");
-      setIsAuthenticated(true);
-      if (result.notificationSent) showToast("Login alert sent to ratlstores1@gmail.com.");
-      else if (result.notificationStatus === "not_configured") showToast("Login alert not sent: configure email settings on this device.");
-      else showToast("Signed in, but the login alert could not be sent.");
-    } catch {
-      setLoginError("Could not verify login. Check your connection and try again.");
-    } finally {
-      setLoginPending(false);
-    }
   }
 
   function toggleTheme() {
@@ -371,27 +319,6 @@ export default function BankDashboard() {
     } finally {
       event.target.value = "";
     }
-  }
-
-  if (!isAuthenticated) {
-    return (
-      <main className={`ratl-login${theme === "dark" ? " theme-dark" : ""}`}>
-        <form className="ratl-login-card" onSubmit={signIn}>
-          <button className="theme-toggle login-theme-toggle" type="button" onClick={toggleTheme} aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`} aria-pressed={theme === "dark"}>
-            <span className="theme-toggle-track"><span className="theme-toggle-thumb" /></span>
-            <span className="theme-toggle-label">{theme === "dark" ? "Dark" : "Light"}</span>
-          </button>
-          <div className="ratl-login-mark">RD</div>
-          <div className="ratl-login-brand">RATL DIARY</div>
-          <h1>Welcome back, HUSSAM</h1>
-          <p>{loginStep === "password" ? "Enter your password to continue." : "Answer your security question to continue."}</p>
-          <label className="ratl-password-label" htmlFor="ratl-login-answer">{loginStep === "password" ? "Password" : "What is your favorite car?"}</label>
-          <input autoFocus id="ratl-login-answer" type={loginStep === "password" ? "password" : "text"} autoComplete="off" value={loginStep === "password" ? password : favoriteCar} onChange={(event) => loginStep === "password" ? setPassword(event.target.value) : setFavoriteCar(event.target.value)} placeholder={loginStep === "password" ? "Enter password" : "Your answer"} />
-          {loginError && <span className="ratl-login-error" role="alert">{loginError}</span>}
-          <button className="primary-button ratl-login-submit" type="submit" disabled={loginPending}>{loginPending ? "Checking..." : loginStep === "password" ? "Continue" : "Open RATL DIARY"}</button>
-        </form>
-      </main>
-    );
   }
 
   return (
