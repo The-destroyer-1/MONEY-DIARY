@@ -1,0 +1,239 @@
+/* Minimal globals for the HRMS demo */
+:root {
+  color-scheme: light;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: #f4f6fb;
+  color: #111827;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background: #eef3fb;
+}
+
+button {
+  font: inherit;
+}
+
+.app-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 28px 24px 40px;
+}
+
+.topbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.dashboard-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 26px;
+}
+
+.nav-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  border-radius: 14px;
+  color: #475569;
+  text-decoration: none;
+  border: 1px solid transparent;
+  background: white;
+}
+
+.nav-item.active {
+  background: #2563eb;
+  color: white;
+}
+
+.input-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 30px;
+}
+
+.input-card {
+  border: 1px solid #e2e8f0;
+}
+
+.form-group {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+label {
+  font-size: 0.95rem;
+  color: #334155;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  font: inherit;
+  color: #0f172a;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.input-card .button {
+  width: 100%;
+  margin-top: 4px;
+}
+
+@media (max-width: 900px) {
+  .input-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  font-size: 0.84rem;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: #475569;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2rem, 2.6vw, 3rem);
+  line-height: 1.05;
+}
+
+.lead {
+  margin: 14px 0 0;
+  max-width: 620px;
+  color: #475569;
+  line-height: 1.7;
+}
+
+.user-panel {
+  display: grid;
+  gap: 14px;
+  align-content: center;
+  text-align: right;
+}
+
+.label {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.88rem;
+}
+
+.user-name {
+  margin: 6px 0 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 999px;
+  padding: 0.95rem 1.4rem;
+  cursor: pointer;
+}
+
+.stats-grid,
+.dashboard-grid {
+  display: grid;
+  gap: 20px;
+}
+
+.stats-grid {
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+
+.dashboard-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.card {
+  background: white;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+}
+
+.card h2 {
+  margin: 0 0 18px;
+  font-size: 1rem;
+  color: #0f172a;
+}
+
+.metric {
+  margin: 0;
+  font-size: 2.75rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.meta {
+  margin: 10px 0 0;
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+.card.wide {
+  grid-column: span 2;
+}
+
+.section {
+  margin-top: 26px;
+}
+
+.notice {
+  background: #ecf1ff;
+  border-radius: 20px;
+  padding: 18px 20px;
+  color: #1e293b;
+}
+
+.notice p {
+  margin: 0;
+}
+
+ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: #475569;
+}
+
+li {
+  margin-bottom: 10px;
+}
+
+@media (max-width: 900px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar {
+    align-items: flex-start;
+  }
+}
