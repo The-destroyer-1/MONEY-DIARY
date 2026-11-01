@@ -25,8 +25,8 @@ export default function SignInForm() {
     try {
       const success = await login(username, password, favoriteCar);
       if (!success) setError("Invalid username, password, or security answer");
-    } catch {
-      setError("Could not verify your login. Please try again.");
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Could not verify your login. Please try again.");
     } finally {
       setIsLoading(false);
     }

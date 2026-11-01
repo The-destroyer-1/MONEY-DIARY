@@ -81,7 +81,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ password, favoriteCar }),
     });
-    if (!response.ok) return false;
+    if (!response.ok) {
+      const result: unknown = await response.json().catch(() => null);
+      const error = result && typeof result === "object" && "error" in result && typeof result.error === "string"
+        ? result.error
+        : "Could not verify your login. Please try again.";
+      throw new Error(error);
+    }
     const userWithDefaults: User = {
       id: Date.now().toString(),
       username: "HUSSAM",
