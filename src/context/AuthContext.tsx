@@ -15,13 +15,13 @@ interface User {
 interface AuthContextType {
   isAuthenticated: boolean;
   user: User | null;
-  login: (username: string, password: string, favoriteCar: string) => Promise<boolean>;
+  login: (password: string) => Promise<boolean>;
   logout: () => void;
   isInitialized: boolean;
   isLocked: boolean;
   showWarning: boolean;
   lockScreen: () => void;
-  unlockScreen: (password: string, favoriteCar: string) => Promise<boolean>;
+  unlockScreen: (password: string) => Promise<boolean>;
   dismissWarning: () => void;
   setShowWarning: (show: boolean) => void;
 }
@@ -74,12 +74,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [isAuthenticated, isInitialized, pathname, router]);
 
-  const login = async (username: string, password: string, favoriteCar: string): Promise<boolean> => {
-    if (username.trim().toUpperCase() !== "HUSSAM") return false;
+  const login = async (password: string): Promise<boolean> => {
     const response = await fetch("/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password, favoriteCar }),
+      body: JSON.stringify({ password }),
     });
     if (!response.ok) {
       const result: unknown = await response.json().catch(() => null);
@@ -116,11 +115,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setShowWarning(false);
   };
 
-  const unlockScreen = async (password: string, favoriteCar: string): Promise<boolean> => {
+  const unlockScreen = async (password: string): Promise<boolean> => {
     const response = await fetch("/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password, favoriteCar }),
+      body: JSON.stringify({ password }),
     });
     if (!response.ok) return false;
     setIsLocked(false);

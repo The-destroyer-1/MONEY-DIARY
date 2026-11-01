@@ -5,7 +5,6 @@ import { useAuth } from '@/context/AuthContext';
 
 export default function LockScreen() {
   const [password, setPassword] = useState('');
-  const [favoriteCar, setFavoriteCar] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { unlockScreen, user } = useAuth();
@@ -15,21 +14,19 @@ export default function LockScreen() {
     setError('');
     setIsSubmitting(true);
 
-    if (!password.trim() || !favoriteCar.trim()) {
-      setError('Enter your password and security answer');
+    if (!password.trim()) {
+      setError('Enter your password');
       setIsSubmitting(false);
       return;
     }
 
     try {
-      const success = await unlockScreen(password, favoriteCar);
+      const success = await unlockScreen(password);
       if (success) {
         setPassword('');
-        setFavoriteCar('');
       } else {
-        setError('Incorrect password or security answer');
+        setError('Password is incorrect.');
         setPassword('');
-        setFavoriteCar('');
       }
     } catch {
       setError('Could not verify your login. Please try again.');
@@ -97,23 +94,9 @@ export default function LockScreen() {
               autoFocus
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              What is your favorite car?
-            </label>
-            <input
-              type="text"
-              value={favoriteCar}
-              onChange={(e) => setFavoriteCar(e.target.value)}
-              placeholder="Your security answer"
-              className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400"
-              disabled={isSubmitting}
-            />
-          </div>
-
           <button
             type="submit"
-            disabled={isSubmitting || !password.trim() || !favoriteCar.trim()}
+            disabled={isSubmitting || !password.trim()}
             className="w-full bg-brand-500 hover:bg-brand-600 disabled:bg-brand-300 text-white font-medium py-2.5 px-4 rounded-lg transition-colors"
           >
             {isSubmitting ? 'Unlocking...' : 'Unlock Session'}

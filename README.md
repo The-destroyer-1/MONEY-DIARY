@@ -78,16 +78,14 @@ git clone https://github.com/TailAdmin/free-nextjs-admin-dashboard.git
 
 The home page is a local card-statement diary. Entries and the light/dark preference are stored in the browser. Use **Local backup** to export or restore the diary as a JSON file; keep that file somewhere safe. The backup includes the BOA, GAB, and DTB card list, statement entries, and theme preference, but not login credentials.
 
-The login screen checks the password and favorite-car answer on the server. Set both in a local `.env.local` file or in your deployment's environment settings. To email a sign-in alert to `ratlstores1@gmail.com`, also configure a Resend API key and a verified sender address:
+The sign-in screen accepts the shared password `123456`; it does not require a username, security answer, or login environment variables. This fixed password is weak and visible in the public source code, so do not use this setup to protect sensitive or public-facing data. To email a sign-in alert to `ratlstores1@gmail.com`, configure a Resend API key and a verified sender address:
 
 ```env
-RATL_LOGIN_PASSWORD=choose-a-private-password
-RATL_SECURITY_ANSWER=choose-a-private-answer
 RESEND_API_KEY=your-resend-api-key
 RATL_LOGIN_FROM=RATL DIARY <verified-sender@your-domain.com>
 ```
 
-Copy `.env.example` to `.env.local` and set private login values plus the email settings. Keep `.env.local` and all credentials private; never commit them. Without login settings the server rejects sign-ins. Without email settings the app reports that no alert was sent.
+Copy `.env.example` to `.env.local` only if you want sign-in email notifications. Keep `.env.local` private; without email settings, the app still accepts the shared password and simply skips the email alert.
 
 ## Components
 

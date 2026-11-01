@@ -29,18 +29,8 @@ export async function POST(request: Request) {
   const values = credentials && typeof credentials === "object"
     ? credentials as Record<string, unknown>
     : {};
-  const expectedPassword = process.env.RATL_LOGIN_PASSWORD;
-  const expectedAnswer = process.env.RATL_SECURITY_ANSWER;
-  if (!expectedPassword || !expectedAnswer) {
-    return NextResponse.json(
-      { authenticated: false, error: "Login is not configured. Set RATL_LOGIN_PASSWORD and RATL_SECURITY_ANSWER on the server." },
-      { status: 503 },
-    );
-  }
   const valid = typeof values.password === "string"
-    && values.password === expectedPassword
-    && typeof values.favoriteCar === "string"
-    && values.favoriteCar.trim().toLowerCase() === expectedAnswer.trim().toLowerCase();
+    && values.password === "123456";
 
   if (!valid) {
     const next = attempt && attempt.resetAt > now
@@ -48,7 +38,7 @@ export async function POST(request: Request) {
       : { count: 1, resetAt: now + attemptWindowMs };
     loginAttempts.set(key, next);
     return NextResponse.json(
-      { authenticated: false, error: next.count >= maxAttempts ? "Too many attempts. Try again in 15 minutes." : "Password or security answer is incorrect." },
+      { authenticated: false, error: next.count >= maxAttempts ? "Too many attempts. Try again in 15 minutes." : "Password is incorrect." },
       { status: next.count >= maxAttempts ? 429 : 401 },
     );
   }
