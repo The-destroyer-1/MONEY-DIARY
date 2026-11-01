@@ -7,7 +7,7 @@ export default function LockScreen() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { unlockScreen, user } = useAuth();
+  const { unlockScreen } = useAuth();
 
   const handleUnlock = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,12 +64,6 @@ export default function LockScreen() {
         <p className="text-center text-gray-600 dark:text-gray-400 mb-6">
           Your session was locked due to inactivity. Please enter your password to unlock.
         </p>
-
-        {/* User Info */}
-        <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-4 mb-6 border border-gray-200 dark:border-gray-700">
-          <p className="text-sm text-gray-600 dark:text-gray-400">Logged in as</p>
-          <p className="text-lg font-semibold text-gray-900 dark:text-white">{user?.username}</p>
-        </div>
 
         {/* Error Message */}
         {error && (
