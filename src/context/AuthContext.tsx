@@ -15,13 +15,19 @@ interface User {
 interface AuthContextType {
   isAuthenticated: boolean;
   user: User | null;
-  login: (password: string) => Promise<boolean>;
+  login: {
+    (username: string, password: string, favoriteCar: string): Promise<boolean>;
+    (password: string): Promise<boolean>;
+  };
   logout: () => void;
   isInitialized: boolean;
   isLocked: boolean;
   showWarning: boolean;
   lockScreen: () => void;
-  unlockScreen: (password: string) => Promise<boolean>;
+  unlockScreen: {
+    (password: string, favoriteCar: string): Promise<boolean>;
+    (password: string): Promise<boolean>;
+  };
   dismissWarning: () => void;
   setShowWarning: (show: boolean) => void;
 }
@@ -74,12 +80,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [isAuthenticated, isInitialized, pathname, router]);
 
-  const login = async (password: string): Promise<boolean> => {
+  const login = async (
+    usernameOrPassword: string,
+    maybePassword?: string,
+    maybeFavoriteCar?: string,
+  ): Promise<boolean> => {
+    const username = maybePassword === undefined ? "HUSSAM" : usernameOrPassword;
+    const password = maybePassword ?? usernameOrPassword;
+    const favoriteCar = maybeFavoriteCar ?? "";
+
+    if (maybePassword !== undefined && username.trim().toUpperCase() !== "HUSSAM") {
+      return false;
+    }
+
     const response = await fetch("/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
+      body: JSON.stringify({
+        password,
+        ...(favoriteCar ? { favoriteCar } : {}),
+      }),
     });
+
     if (!response.ok) {
       const result: unknown = await response.json().catch(() => null);
       const error = result && typeof result === "object" && "error" in result && typeof result.error === "string"
@@ -87,6 +109,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         : "Could not verify your login. Please try again.";
       throw new Error(error);
     }
+
     const userWithDefaults: User = {
       id: Date.now().toString(),
       username: "HUSSAM",
@@ -115,11 +138,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setShowWarning(false);
   };
 
-  const unlockScreen = async (password: string): Promise<boolean> => {
+  const unlockScreen = async (
+    password: string,
+    maybeFavoriteCar?: string,
+  ): Promise<boolean> => {
     const response = await fetch("/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
+      body: JSON.stringify({
+        password,
+        ...(maybeFavoriteCar ? { favoriteCar: maybeFavoriteCar } : {}),
+      }),
     });
     if (!response.ok) return false;
     setIsLocked(false);
