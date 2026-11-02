@@ -34,11 +34,19 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const defaultUser = (): User => ({
+  id: "default-user",
+  username: "HUSSAM",
+  name: "HUSSAM",
+  role: "admin",
+  avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent("HUSSAM")}`,
+});
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [user, setUser] = useState<User | null>(defaultUser());
   const [isInitialized, setIsInitialized] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
@@ -46,7 +54,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const pathname = usePathname();
 
   useEffect(() => {
-    // Check if user is already logged in from localStorage
     const savedUser = localStorage.getItem("auth_user");
     if (savedUser) {
       try {
@@ -59,26 +66,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             ...("role" in parsedUser && typeof parsedUser.role === "string" ? { role: parsedUser.role } : {}),
             ...("avatar" in parsedUser && typeof parsedUser.avatar === "string" ? { avatar: parsedUser.avatar } : {}),
           };
-          // Restore the browser-only session after hydration.
-          // eslint-disable-next-line react-hooks/set-state-in-effect
           setUser(safeUser);
           setIsAuthenticated(true);
           localStorage.setItem("auth_user", JSON.stringify(safeUser));
-        } else {
-          localStorage.removeItem("auth_user");
+          return;
         }
+        localStorage.removeItem("auth_user");
       } catch {
         localStorage.removeItem("auth_user");
       }
     }
+
+    const fallbackUser = defaultUser();
+    setUser(fallbackUser);
+    setIsAuthenticated(true);
+    localStorage.setItem("auth_user", JSON.stringify(fallbackUser));
     setIsInitialized(true);
   }, []);
 
   useEffect(() => {
-    if (isInitialized && !isAuthenticated && !pathname.includes("/signin") && !pathname.includes("/signup")) {
-      router.push("/signin");
+    if (isInitialized && !pathname.includes("/signin") && !pathname.includes("/signup")) {
+      const currentUser = user ?? defaultUser();
+      setUser(currentUser);
+      setIsAuthenticated(true);
+      localStorage.setItem("auth_user", JSON.stringify(currentUser));
     }
-  }, [isAuthenticated, isInitialized, pathname, router]);
+  }, [isInitialized, pathname, user]);
 
   const login = async (
     usernameOrPassword: string,
@@ -130,7 +143,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setIsLocked(false);
     setShowWarning(false);
     localStorage.removeItem("auth_user");
-    router.push("/signin");
+    router.push("/");
   };
 
   const lockScreen = () => {
