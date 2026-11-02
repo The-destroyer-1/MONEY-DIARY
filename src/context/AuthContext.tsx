@@ -45,8 +45,8 @@ const defaultUser = (): User => ({
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
-  const [user, setUser] = useState<User | null>(defaultUser());
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
@@ -69,6 +69,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           setUser(safeUser);
           setIsAuthenticated(true);
           localStorage.setItem("auth_user", JSON.stringify(safeUser));
+          setIsInitialized(true);
           return;
         }
         localStorage.removeItem("auth_user");
@@ -77,21 +78,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     }
 
-    const fallbackUser = defaultUser();
-    setUser(fallbackUser);
-    setIsAuthenticated(true);
-    localStorage.setItem("auth_user", JSON.stringify(fallbackUser));
     setIsInitialized(true);
   }, []);
 
   useEffect(() => {
-    if (isInitialized && !pathname.includes("/signin") && !pathname.includes("/signup")) {
-      const currentUser = user ?? defaultUser();
-      setUser(currentUser);
-      setIsAuthenticated(true);
-      localStorage.setItem("auth_user", JSON.stringify(currentUser));
+    if (isInitialized && !isAuthenticated && !pathname.includes("/signin") && !pathname.includes("/signup")) {
+      router.push("/signin");
     }
-  }, [isInitialized, pathname, user]);
+  }, [isAuthenticated, isInitialized, pathname, router]);
 
   const login = async (
     usernameOrPassword: string,
@@ -143,7 +137,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setIsLocked(false);
     setShowWarning(false);
     localStorage.removeItem("auth_user");
-    router.push("/");
+    router.push("/signin");
   };
 
   const lockScreen = () => {
