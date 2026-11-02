@@ -4,6 +4,7 @@ const recipient = "ratlstores1@gmail.com";
 const attemptWindowMs = 15 * 60 * 1000;
 const maxAttempts = 8;
 const loginAttempts = new Map<string, { count: number; resetAt: number }>();
+const defaultPassword = "162003";
 
 function getClientKey(request: Request) {
   return request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
@@ -29,8 +30,17 @@ export async function POST(request: Request) {
   const values = credentials && typeof credentials === "object"
     ? credentials as Record<string, unknown>
     : {};
+
+  const expectedPassword = (process.env.RATL_LOGIN_PASSWORD ?? "").trim() || defaultPassword;
+  const expectedAnswer = process.env.RATL_SECURITY_ANSWER?.trim();
+  const favoriteCar = typeof values.favoriteCar === "string" ? values.favoriteCar.trim() : "";
+
   const valid = typeof values.password === "string"
-    && values.password === "123456";
+    && values.password === expectedPassword
+    && (
+      !expectedAnswer
+      || favoriteCar.toLowerCase() === expectedAnswer.toLowerCase()
+    );
 
   if (!valid) {
     const next = attempt && attempt.resetAt > now
@@ -38,7 +48,7 @@ export async function POST(request: Request) {
       : { count: 1, resetAt: now + attemptWindowMs };
     loginAttempts.set(key, next);
     return NextResponse.json(
-      { authenticated: false, error: next.count >= maxAttempts ? "Too many attempts. Try again in 15 minutes." : "Password is incorrect." },
+      { authenticated: false, error: next.count >= maxAttempts ? "Too many attempts. Try again in 15 minutes." : "Password or security answer is incorrect." },
       { status: next.count >= maxAttempts ? 429 : 401 },
     );
   }
@@ -70,9 +80,10 @@ export async function POST(request: Request) {
       console.error("RATL DIARY login notification failed:", emailResponse.status, await emailResponse.text());
       return NextResponse.json({ authenticated: true, notificationSent: false, notificationStatus: "send_failed" });
     }
-    return NextResponse.json({ authenticated: true, notificationSent: true });
+
+    return NextResponse.json({ authenticated: true, notificationSent: true, notificationStatus: "sent" });
   } catch (error) {
-    console.error("RATL DIARY login notification request failed:", error);
-    return NextResponse.json({ authenticated: true, notificationSent: false, notificationStatus: "send_failed" });
+    console.error("RATL DIARY login notification error:", error);
+    return NextResponse.json({ authenticated: true, notificationSent: false, notificationStatus: "error" });
   }
 }
